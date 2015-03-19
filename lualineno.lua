@@ -17,3 +17,23 @@ local check_whatsit_user_string = function(item)
   end
   return false
 end
+
+local number_lines = function (head)
+  local line_number = 0
+  for line in node.traverse_id(HLIST, head) do
+    line_number = line_number + 1
+    local item = line.head
+    while item.next do
+      item = item.next
+    end
+    local temp = node.new("glyph")
+    temp.font = font.current()
+    temp.lang = tex.language
+    temp.char = 97
+    node.insert_after(line.head, item, temp)
+  end
+  return head
+end
+
+
+luatexbase.add_to_callback("post_linebreak_filter", number_lines, "line_numbering")
